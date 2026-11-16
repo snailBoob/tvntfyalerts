@@ -1,0 +1,14 @@
+{
+  "name": "tvntfyalerts",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20.12" },
+  "scripts": {
+    "start": "node app.mjs",
+    "probe": "node probe.mjs",
+    "check": "node --check app.mjs && node --check settings.mjs && node --check tradingview.mjs && node --check notifications.mjs && node --check relay.mjs && node --check logging.mjs && node --check probe.mjs && node --check public/client.js",
+    "test": "node --test *.test.mjs"
+  },
+  "dependencies": { "ws": "^8.18.3" }
+}

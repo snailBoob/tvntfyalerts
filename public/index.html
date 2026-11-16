@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>TV ntfy · Settings</title>
+  <link rel="icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="stylesheet" href="/style.css">
+  <script src="/client.js" defer></script>
+</head>
+<body>
+  <main>
+    <header><span class="wordmark"><span class="brand-accent">TradingView</span><span aria-hidden="true">→</span><span>ntfy</span></span></header>
+    <section class="intro">
+      <h1>Your own TradingView alerts.<br><span>Instantly forwarded to ntfy.</span></h1>
+      <p>Connect your TradingView account to a ntfy notification server of your choice.<br>Receive price alerts even when your browser is closed.</p>
+    </section>
+    <section class="connection" aria-label="Connection status" aria-live="polite">
+      <span id="dot" class="dot" aria-hidden="true"></span>
+      <div><strong id="status">Checking connection…</strong><p id="detail">Please wait.</p><p id="delivery-error" class="error" hidden></p></div>
+    </section>
+    <div class="setup">
+      <section aria-labelledby="form-title">
+        <h2 id="form-title">Connect to TradingView</h2>
+        <p class="muted">Paste the two session cookies from your browser. Your TradingView password is not needed.</p>
+        <form id="cookies">
+          <label for="sessionid">sessionid</label>
+          <input id="sessionid" name="sessionid" type="password" autocomplete="off" spellcheck="false" required maxlength="4096" placeholder="Paste the sessionid value">
+          <label for="sessionid_sign">sessionid_sign</label>
+          <input id="sessionid_sign" name="sessionid_sign" type="password" autocomplete="off" spellcheck="false" required maxlength="4096" placeholder="Paste the sessionid_sign value">
+          <button id="connect" type="submit">Connect <span aria-hidden="true">→</span></button>
+          <p id="result" role="status" aria-live="polite"></p>
+        </form>
+        <p class="privacy">Cookies are stored on this server and sent only to TradingView. They never appear in ntfy or the logs.</p>
+      </section>
+      <aside>
+        <h2>Where do I find the cookies?</h2>
+        <ol>
+          <li>Open <a href="https://www.tradingview.com/chart/" target="_blank" rel="noreferrer">TradingView</a> in Brave or Chrome and sign in.</li>
+          <li>Open Developer Tools with <kbd>F12</kbd> or through the browser menu.</li>
+          <li>Select <strong>Application → Storage → Cookies</strong>, then TradingView.</li>
+          <li>Copy the <strong>Value</strong> of <strong>sessionid</strong> and <strong>sessionid_sign</strong> into the matching fields.</li>
+        </ol>
+        <p class="muted">Session no longer valid? Use <strong>Open settings</strong> in the ntfy notification, paste fresh cookies and click Connect again.</p>
+      </aside>
+    </div>
+    <footer><span>Notifications to <strong id="destination">tradingview-alerts</strong></span><span id="last-sent">No alerts forwarded in this session yet.</span></footer>
+  </main>
+</body>
+</html>

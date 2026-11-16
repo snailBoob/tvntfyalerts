@@ -1,0 +1,111 @@
+name: Release images
+on:
+  push:
+    tags: ['v*.*.*']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  build:
+    if: github.repository == 'snailBoob/tvntfyalerts' && startsWith(github.ref, 'refs/tags/v')
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-24.04
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+      - name: Validate release version
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          node -e 'const p=require("./package.json"); if(process.env.TAG !== "v"+p.version) process.exit(1)'
+          echo "VERSION=${TAG#v}" >> "$GITHUB_ENV"
+          echo "IMAGE=ghcr.io/snailboob/tvntfyalerts" >> "$GITHUB_ENV"
+          echo "CANDIDATE=ghcr.io/snailboob/tvntfyalerts:build-${GITHUB_SHA}-${{ matrix.arch }}" >> "$GITHUB_ENV"
+      - name: Validate Compose examples
+        run: |
+          docker compose --env-file docker.env.example config --quiet
+          docker compose --env-file docker.env.example -f compose.yml -f compose.ntfy.yml config --quiet
+          docker compose --env-file docker.env.example -f compose.yml -f compose.existing-ntfy.yml config --quiet
+          docker compose --env-file docker.env.example -f compose.yml -f compose.build.yml config --quiet
+      - name: Audit production dependencies
+        run: npm audit --omit=dev --audit-level=high
+      - name: Build and run embedded tests
+        run: |
+          docker buildx build --platform linux/${{ matrix.arch }} --load \
+            --label org.opencontainers.image.source=https://github.com/snailBoob/tvntfyalerts \
+            --label org.opencontainers.image.version="$VERSION" \
+            --label org.opencontainers.image.revision="$GITHUB_SHA" \
+            -t "$CANDIDATE" .
+      - name: Smoke-test the actual image
+        run: bash scripts/docker-smoke.sh "$CANDIDATE"
+      - uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish verified candidate and export image
+        run: |
+          mkdir -p dist
+          docker push "$CANDIDATE"
+          docker image inspect "$CANDIDATE" --format '{{index .RepoDigests 0}}' > dist/digest-${{ matrix.arch }}.txt
+          docker tag "$CANDIDATE" "$IMAGE:$VERSION"
+          docker save "$IMAGE:$VERSION" | gzip > "dist/tvntfyalerts-${VERSION}-linux-${{ matrix.arch }}.tar.gz"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: image-${{ matrix.arch }}
+          path: dist/*
+          retention-days: 3
+          compression-level: 0
+          if-no-files-found: error
+  publish:
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      packages: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          pattern: image-*
+          path: dist
+          merge-multiple: true
+      - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+      - uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish multi-platform image and GitHub release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          VERSION=${TAG#v}
+          IMAGE=ghcr.io/snailboob/tvntfyalerts
+          docker buildx imagetools create -t "$IMAGE:$VERSION" -t "$IMAGE:latest" \
+            "$(cat dist/digest-amd64.txt)" "$(cat dist/digest-arm64.txt)"
+          docker buildx imagetools inspect "$IMAGE:$VERSION"
+          cp compose*.yml docker.env.example README.md dist/
+          (cd dist && sha256sum *.tar.gz > SHA256SUMS)
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" --clobber dist/*.tar.gz dist/SHA256SUMS dist/compose*.yml dist/docker.env.example dist/README.md
+          else
+            gh release create "$TAG" --verify-tag --title "TV ntfy Alerts $VERSION" --notes-file RELEASE_NOTES.md \
+              dist/*.tar.gz dist/SHA256SUMS dist/compose*.yml dist/docker.env.example dist/README.md
+          fi

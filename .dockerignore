@@ -1,0 +1,20 @@
+# Allowlist: never send credentials, recordings, state or Git history to Docker.
+**
+!Dockerfile
+!package.json
+!package-lock.json
+!app.mjs
+!settings.mjs
+!tradingview.mjs
+!notifications.mjs
+!relay.mjs
+!logging.mjs
+!probe.mjs
+!*.test.mjs
+!public/
+!public/index.html
+!public/client.js
+!public/style.css
+!public/logo.png
+!public/favicon.ico
+!public/apple-touch-icon.png

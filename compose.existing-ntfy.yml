@@ -1,0 +1,11 @@
+# Join an existing ntfy container's network without modifying that container.
+services:
+  app:
+    environment:
+      NTFY_URL: "${NTFY_INTERNAL_URL:-http://ntfy:80}"
+    networks:
+      - existing-ntfy
+networks:
+  existing-ntfy:
+    external: true
+    name: "${NTFY_NETWORK:-ntfy_default}"

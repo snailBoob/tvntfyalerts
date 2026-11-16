@@ -1,0 +1,10 @@
+.env
+.env.*
+!.env.example
+node_modules/
+debug/
+data/
+.env.tmp
+docker.env
+*.tar
+*.tar.gz

@@ -1,0 +1,5 @@
+# Optional local build: add -f compose.build.yml after -f compose.yml.
+services:
+  app:
+    image: tv-ntfy:local
+    build: .

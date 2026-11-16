@@ -11,7 +11,7 @@ authentication changes may require an update. No automatic TradingView login is 
 
 ## Supported platforms
 
-Image: **`ghcr.io/snailboob/tvntfyalerts:1.0.0`**
+Image: **`ghcr.io/snailboob/tvntfyalerts:1.0.1`**
 
 | Platform | Image architecture |
 | --- | --- |
@@ -128,7 +128,7 @@ the Project UI. Replace the NAS address and network name with your values:
 services:
   app:
     container_name: tv-ntfy
-    image: ghcr.io/snailboob/tvntfyalerts:1.0.0
+    image: ghcr.io/snailboob/tvntfyalerts:1.0.1
     init: true
     restart: unless-stopped
     stop_grace_period: 20s
@@ -156,14 +156,14 @@ networks:
 ### Offline image import
 
 Release downloads include an image archive for each architecture and `SHA256SUMS`.
-For Intel/AMD Synology, download `tvntfyalerts-1.0.0-linux-amd64.tar.gz`,
+For Intel/AMD Synology, download `tvntfyalerts-1.0.1-linux-amd64.tar.gz`,
 decompress it to `.tar`, then use **Image → Add → Add From File**.
-The imported image is tagged `ghcr.io/snailboob/tvntfyalerts:1.0.0`, matching the YAML.
+The imported image is tagged `ghcr.io/snailboob/tvntfyalerts:1.0.1`, matching the YAML.
 
 For a 64-bit Raspberry Pi, use the `linux-arm64.tar.gz` archive:
 
 ```sh
-docker load -i tvntfyalerts-1.0.0-linux-arm64.tar.gz
+docker load -i tvntfyalerts-1.0.1-linux-arm64.tar.gz
 docker compose --env-file docker.env up -d --pull never
 ```
 

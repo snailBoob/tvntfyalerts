@@ -8,8 +8,10 @@
 body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.7 var(--body); }
 main { max-width: 1024px; margin: auto; padding: var(--sp-8) var(--sp-6); }
 header { display: flex; justify-content: space-between; gap: var(--sp-4); align-items: center; border-bottom: 1px solid var(--border); padding-bottom: var(--sp-6); }
-.wordmark { display: flex; align-items: center; gap: var(--sp-3); font: bold 20px var(--display); }
-.brand-accent, h1 span { color: var(--accent); }
+.wordmark { display: flex; align-items: center; gap: var(--sp-4); font: bold 20px var(--display); }
+.brand-logo { display: block; width: 48px; height: 48px; border-radius: 5.14px; overflow: hidden; }
+.brand-arrow { font-size: 26px; color: var(--muted); }
+h1 span { color: var(--accent); }
 h1,h2 { font-family: var(--display); text-wrap: balance; line-height: 1.15; }
 h1 { font-size: clamp(36px, 5vw, 54px); letter-spacing: -0.035em; margin: 0 0 var(--sp-6); }
 h2 { font-size: 23px; margin: 0 0 var(--sp-4); }

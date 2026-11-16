@@ -1,4 +1,10 @@
-# TV ntfy Alerts 1.0.0
+# TV ntfy Alerts 1.0.1
+
+## Changes
+
+- Use the blue-and-white app favicon and Apple touch icon.
+- Show TradingView and ntfy logos with matching sizes and corner radii in the header.
+- Simplify setup instructions with one action per step.
 
 Forward existing TradingView price alerts to your own ntfy server without webhooks,
 polling or an open browser. Includes cookie setup, automatic reconnection,
@@ -6,7 +12,7 @@ persistent deduplication, connection notifications and safe diagnostic logs.
 
 ## Images
 
-`ghcr.io/snailboob/tvntfyalerts:1.0.0` selects the correct architecture automatically:
+`ghcr.io/snailboob/tvntfyalerts:1.0.1` selects the correct architecture automatically:
 
 - **linux/amd64**: Intel/AMD Synology and other x86-64 Docker hosts.
 - **linux/arm64**: Raspberry Pi running a **64-bit OS**, and other ARM64 Docker hosts.

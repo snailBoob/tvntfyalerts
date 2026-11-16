@@ -49,7 +49,7 @@ for(let i=0;i<30;i++) {
 }
 assert.ok(ready,'settings API must become available');
 assert.notEqual(process.getuid(),0,'runtime must be non-root');
-for(const path of ['/','/style.css','/client.js','/favicon.ico','/apple-touch-icon.png']) {
+for(const path of ['/','/style.css','/client.js','/favicon.ico','/apple-touch-icon.png','/tradingview.svg','/ntfy.svg']) {
   const res=await fetch('http://localhost:3080'+path);
   assert.equal(res.status,200,path);
   assert.ok((await res.arrayBuffer()).byteLength>0,path);

@@ -73,7 +73,7 @@ export function createApp({ relay, delivery, config, envPath = '.env' }) {
         } finally { saving = false; broadcast(); }
         return;
       }
-      const files = { '/': ['index.html', 'text/html; charset=utf-8'], '/style.css': ['style.css', 'text/css'], '/client.js': ['client.js', 'text/javascript'], '/logo.png': ['logo.png', 'image/png'], '/favicon.ico': ['favicon.ico', 'image/x-icon'], '/apple-touch-icon.png': ['apple-touch-icon.png', 'image/png'] };
+      const files = { '/': ['index.html', 'text/html; charset=utf-8'], '/style.css': ['style.css', 'text/css'], '/client.js': ['client.js', 'text/javascript'], '/logo.png': ['logo.png', 'image/png'], '/favicon.ico': ['favicon.ico', 'image/x-icon'], '/apple-touch-icon.png': ['apple-touch-icon.png', 'image/png'], '/tradingview.svg': ['tradingview.svg', 'image/svg+xml'], '/ntfy.svg': ['ntfy.svg', 'image/svg+xml'] };
       if (req.method === 'GET' && files[req.url]) {
         const [file, type] = files[req.url];
         const data = await readFile(new URL(`./public/${file}`, import.meta.url));
